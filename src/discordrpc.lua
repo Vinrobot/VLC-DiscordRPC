@@ -45,7 +45,49 @@ function update_rpc()
 	if item ~= nil then
 		vlc.msg.dbg("[DiscordRPC] " .. item:uri())
 		vlc.msg.dbg("[DiscordRPC] " .. item:name())
+		vlc.msg.dbg("[DiscordRPC] " .. dump(getstatus()))
 	else
 		vlc.msg.dbg("[DiscordRPC] No item")
+	end
+end
+
+function getstatus()
+	local input = vlc.object.input()
+	local item = vlc.input.item()
+	local s = {}
+
+	s.uri = item:uri()
+	s.name = item:name()
+	s.state = vlc.playlist.status()
+
+	if input then
+		s.time = math.floor(vlc.var.get(input, "time") / 1000000)
+		s.position = vlc.var.get(input, "position")
+	else
+		s.time = 0
+		s.position = 0
+	end
+
+	if item then
+		s.duration = math.floor(item:duration())
+	else
+		s.duration = 0
+	end
+
+	return s
+end
+
+function dump(o)
+	if type(o) == 'table' then
+		local s = '{ '
+		for k,v in pairs(o) do
+			if type(k) ~= 'number' then
+				k = '"'..k..'"'
+			end
+			s = s .. '['..k..'] = ' .. dump(v) .. ','
+		end
+		return s .. '} '
+	else
+		return tostring(o)
 	end
 end
