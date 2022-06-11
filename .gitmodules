@@ -1,0 +1,3 @@
+[submodule "lua-discordRPC"]
+	path = lua-discordRPC
+	url = https://github.com/pfirsich/lua-discordRPC.git
